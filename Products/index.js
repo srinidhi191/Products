@@ -4,11 +4,7 @@ const path = require('path');
 
 const app = express();
 app.use(express.json());
-
-// File path for products data
 const FILE = path.join(__dirname, 'products.json');
-
-// Ensure products.json exists
 function ensureFile() {
   if (!fs.existsSync(FILE)) {
     const data = [
@@ -18,19 +14,13 @@ function ensureFile() {
     fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
   }
 }
-
-// Read data
 function read() {
   ensureFile();
   return JSON.parse(fs.readFileSync(FILE));
 }
-
-// Write data
 function write(data) {
   fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
 }
-
-// Homepage
 app.get('/', (req, res) => {
   res.send(`
     <h1>Welcome to Product API</h1>
@@ -42,8 +32,6 @@ app.get('/', (req, res) => {
     </ul>
   `);
 });
-
-// /output route - show as HTML table
 app.get('/output', (req, res) => {
   const products = read();
   let html = `
@@ -63,16 +51,12 @@ app.get('/output', (req, res) => {
   html += '</table>';
   res.send(html);
 });
-
-// Get all products (JSON)
 app.get('/products', (req, res) => res.json(read()));
 
-// Get only in-stock products
 app.get('/products/instock', (req, res) => {
   res.json(read().filter(p => p.inStock));
 });
 
-// Add new product
 app.post('/products', (req, res) => {
   const { name, price, inStock } = req.body;
   if (!name || typeof price !== 'number' || typeof inStock !== 'boolean') {
@@ -91,7 +75,6 @@ app.post('/products', (req, res) => {
   res.json(newProduct);
 });
 
-// Update product by ID
 app.put('/products/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const products = read();
@@ -102,8 +85,6 @@ app.put('/products/:id', (req, res) => {
   write(products);
   res.json(product);
 });
-
-// Delete product by ID
 app.delete('/products/:id', (req, res) => {
   const id = parseInt(req.params.id);
   let products = read();
@@ -117,3 +98,4 @@ app.delete('/products/:id', (req, res) => {
 
 // Start server
 app.listen(3000, () => console.log('✅ Server running at http://localhost:3000'));
+
