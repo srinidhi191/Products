@@ -96,6 +96,6 @@ app.delete('/products/:id', (req, res) => {
   res.json({ message: 'Deleted successfully' });
 });
 
-// Start server
 app.listen(3000, () => console.log('✅ Server running at http://localhost:3000'));
+
 
